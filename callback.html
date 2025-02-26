@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authenticating...</title>
+    <script>
+        // Handle authentication response and redirect to homepage
+        window.onload = function() {
+            if (window.location.hash.includes("access_token")) {
+                window.location.href = "/";
+            } else {
+                document.body.innerHTML = "<p>Authentication failed. Please try again.</p>";
+            }
+        };
+    </script>
+</head>
+<body>
+    <p>Redirecting...</p>
+</body>
+</html>
