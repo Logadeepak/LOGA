@@ -84,19 +84,23 @@
         .btn-group {
             margin-top: 30px;
         }
-        .btn-group a {
-            text-decoration: none;
+        .btn-group button {
             background-color: #007bff;
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
             font-size: 16px;
-            margin: 0 10px;
-            display: inline-block;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        .btn-group a:hover {
+        .btn-group button:hover {
             background-color: #0056b3;
+        }
+        .btn-group button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
         }
         footer {
             background-color: #007bff;
@@ -107,18 +111,6 @@
         }
         footer p {
             font-size: 0.9em;
-        }
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .grid {
-                flex-direction: column;
-            }
-            .navbar {
-                padding: 15px 20px;
-            }
-            .container h1 {
-                font-size: 28px;
-            }
         }
     </style>
 </head>
@@ -160,6 +152,15 @@
                     <h3>Emergency Tracker</h3>
                 </a>
             </div>
+            <div class="card">
+                <img src="sensor.jpg" alt="Flood Sensor Icon">
+                <h3>Flood Level Detection</h3>
+                <div class="btn-group">
+                    <button id="connectBtn">Connect Arduino</button>
+                    <button id="readSensorBtn" disabled>Check Flood Level</button>
+                </div>
+                <p id="sensorStatus">Status: Not Connected</p>
+            </div>
         </div>
     </div>
 
@@ -167,6 +168,41 @@
     <footer>
         <p>&copy; 2024 Flood Vantage. All rights reserved.</p>
     </footer>
+
+    <script>
+        let port;
+        let reader;
+
+        document.getElementById("connectBtn").addEventListener("click", async () => {
+            try {
+                port = await navigator.serial.requestPort();
+                await port.open({ baudRate: 115200 });
+                reader = port.readable.getReader();
+                document.getElementById("sensorStatus").textContent = "Status: Connected";
+                document.getElementById("readSensorBtn").disabled = false;
+            } catch (error) {
+                console.error("Connection failed", error);
+                document.getElementById("sensorStatus").textContent = "Status: Connection Failed";
+            }
+        });
+
+        document.getElementById("readSensorBtn").addEventListener("click", async () => {
+            if (!reader) return;
+
+            try {
+                const { value, done } = await reader.read();
+                if (done) {
+                    reader.releaseLock();
+                    return;
+                }
+
+                const sensorData = new TextDecoder().decode(value).trim();
+                document.getElementById("sensorStatus").textContent = `Flood Sensor: ${sensorData}`;
+            } catch (error) {
+                console.error("Error reading data", error);
+            }
+        });
+    </script>
 
 </body>
 </html>
