@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood Vantage - Community</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f1f4f9;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .content h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        .card p {
+            font-size: 14px;
+            color: #555;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+        }
+        .back-button {
+            margin-top: 20px;
+        }
+        .back-button a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 16px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .back-button a:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Community</h1>
+    </header>
+    <div class="content">
+        <h2>Community Organizations</h2>
+        <div class="card-container">
+            <div class="card">
+                <a href="tel:+919444888937" style="text-decoration: none; color: inherit;">
+                    <h3>Thuvakkam</h3>
+                    <p>Contact: +91 94448 88937</p>
+                </a>
+            </div>
+            
+            <div class="card">
+                <a href="tel:+919710709900" style="text-decoration: none; color: inherit;">
+                    <h3>Dream Kalam</h3>
+                    <p>Contact: +91 97107 09900</p>
+                </a>
+            </div>
+
+            <div class="card">
+                <a href="tel:+919444112271" style="text-decoration: none; color: inherit;">
+                    <h3>Eco Society India</h3>
+                    <p>Contact: +91 94441 12271</p>
+                </a>
+            </div>
+
+            <div class="card">
+                <a href="tel:+919940203871" style="text-decoration: none; color: inherit;">
+                    <h3>Environmentalist Foundation Of India (E.F.I)</h3>
+                    <p>Contact: +91 99402 03871</p>
+                </a>
+            </div>
+        </div>
+        <div class="back-button">
+            <a href="dashboard.html">← Back to Dashboard</a>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Flood Vantage. All rights reserved.</p>
+    </footer>
+</body>
+</html>
