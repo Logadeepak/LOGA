@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flood Vantage - Login</title>
+    <script src="https://cdn.auth0.com/js/auth0/9.19/auth0.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -31,23 +32,6 @@
             font-size: 28px;
             margin-bottom: 20px;
         }
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .input-group label {
-            font-size: 14px;
-            color: #333;
-            margin-bottom: 5px;
-            display: block;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
         .btn {
             width: 100%;
             padding: 12px;
@@ -58,6 +42,7 @@
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-top: 10px;
         }
         .btn:hover {
             background-color: #0056b3;
@@ -72,12 +57,6 @@
         }
         .links a:hover {
             color: #0056b3;
-        }
-        .logo {
-            margin-bottom: 30px;
-        }
-        .logo img {
-            width: 80px;
         }
         .back-button {
             margin-top: 20px;
@@ -95,30 +74,49 @@
     </style>
 </head>
 <body>
-
     <div class="login-container">
-        <div class="logo">
-            <img src="logo.jpg" alt="Flood Vantage Logo">
-        </div>
         <h2>Login</h2>
-        <form>
-            <div class="input-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Enter your email" required>
-            </div>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter your password" required>
-            </div>
-            <button type="submit" class="btn">Login</button>
-            <div class="links">
-                <p>Don't have an account? <a href="register.html">Register here</a></p>
-            </div>
-            <div class="back-button">
-                <a href="home.html">← Back to Home</a>
-            </div>
-        </form>
+        <button class="btn" onclick="login()">Login with Auth0</button>
+        <button class="btn" onclick="logout()">Logout</button>
+        <div class="links">
+            <p>Don't have an account? <a href="register.html">Register here</a></p>
+        </div>
+        <div class="back-button">
+            <a href="home.html">← Back to Home</a>
+        </div>
+        <div id="profile" style="margin-top: 20px;"></div>
     </div>
 
+    <script>
+        const auth0Client = new auth0.WebAuth({
+            domain: "dev-0b0v0mrnhy5qfc0w.us.auth0.com",
+            redirectUri: "https://logadeepak.github.io/callback",
+            responseType: "token id_token",
+            scope: "openid profile email"
+        });
+
+        function login() {
+            auth0Client.authorize();
+        }
+
+        function logout() {
+            auth0Client.logout({
+                returnTo: "https://logadeepak.github.io"
+            });
+        }
+
+        function handleAuth() {
+            auth0Client.parseHash((err, authResult) => {
+                if (authResult && authResult.accessToken) {
+                    document.getElementById("profile").innerText =
+                        `Hello, ${authResult.idTokenPayload.name}`;
+                } else if (err) {
+                    console.log("Error: ", err);
+                }
+            });
+        }
+        
+        window.onload = handleAuth;
+    </script>
 </body>
 </html>
