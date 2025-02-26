@@ -71,176 +71,78 @@
         .back-button a:hover {
             color: #0056b3;
         }
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <button class="btn" onclick="login()">Login with Auth0</button>
-        <button class="btn" onclick="logout()">Logout</button>
-        <div class="links">
-            <p>Don't have an account? <a href="register.html">Register here</a></p>
-        </div>
-        <div class="back-button">
-            <a href="home.html">← Back to Home</a>
-        </div>
-        <div id="profile" style="margin-top: 20px;"></div>
-    </div>
-
-    <script>
-        const auth0Client = new auth0.WebAuth({
-            domain: "dev-0b0v0mrnhy5qfc0w.us.auth0.com",
-            clientID: "aeO2Do3FV31G48Canc0k2Kv5eW2BlZUN",  // ✅ Your actual Auth0 Client ID
-            redirectUri: "https://logadeepak.github.io/callback",
-            responseType: "token id_token",
-            scope: "openid profile email"
-        });
-
-        function login() {
-            auth0Client.authorize();
-        }
-
-        function logout() {
-            auth0Client.logout({
-                returnTo: "https://logadeepak.github.io"
-            });
-        }
-
-        function handleAuth() {
-            auth0Client.parseHash((err, authResult) => {
-                if (authResult && authResult.idTokenPayload) {
-                    document.getElementById("profile").innerText =
-                        `Hello, ${authResult.idTokenPayload.name}`;
-                } else if (err) {
-                    console.log("Error: ", err);
-                }
-            });
-        }
-        
-        window.onload = handleAuth;
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flood Vantage - Login</title>
-    <script src="https://cdn.auth0.com/js/auth0/9.19/auth0.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f1f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .login-container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            width: 350px;
-            text-align: center;
-        }
-        h2 {
-            color: #007bff;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 10px;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        .links {
-            margin-top: 15px;
-            font-size: 14px;
-        }
-        .links a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .links a:hover {
-            color: #0056b3;
-        }
-        .back-button {
+        #profile {
+            display: none;
             margin-top: 20px;
-            text-align: center;
         }
-        .back-button a {
-            text-decoration: none;
-            color: #007bff;
-            font-size: 16px;
-            transition: color 0.3s;
-        }
-        .back-button a:hover {
-            color: #0056b3;
+        #profile img {
+            width: 50px;
+            border-radius: 50%;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h2>Login</h2>
-        <button class="btn" onclick="login()">Login with Auth0</button>
-        <button class="btn" onclick="logout()">Logout</button>
+        <button id="login" class="btn">Login with Auth0</button>
+        <button id="logout" class="btn" style="display:none;">Logout</button>
         <div class="links">
             <p>Don't have an account? <a href="register.html">Register here</a></p>
         </div>
         <div class="back-button">
             <a href="home.html">← Back to Home</a>
         </div>
-        <div id="profile" style="margin-top: 20px;"></div>
+        <div id="profile"></div>
     </div>
 
     <script>
-        const auth0Client = new auth0.WebAuth({
+        let auth0Client;
+
+        auth0.createAuth0Client({
             domain: "dev-0b0v0mrnhy5qfc0w.us.auth0.com",
-            clientID: "aeO2Do3FV31G48Canc0k2Kv5eW2BlZUN",  // ✅ Your actual Auth0 Client ID
-            redirectUri: "https://logadeepak.github.io/callback",
-            responseType: "token id_token",
-            scope: "openid profile email"
+            clientId: "aeO2Do3FV31G48Canc0k2Kv5eW2BlZUN",
+            authorizationParams: {
+                redirect_uri: window.location.origin
+            }
+        }).then(async (client) => {
+            auth0Client = client;
+
+            const loginButton = document.getElementById("login");
+            const logoutButton = document.getElementById("logout");
+            const profileElement = document.getElementById("profile");
+
+            loginButton.addEventListener("click", (e) => {
+                e.preventDefault();
+                auth0Client.loginWithRedirect();
+            });
+
+            logoutButton.addEventListener("click", (e) => {
+                e.preventDefault();
+                auth0Client.logout({ returnTo: window.location.origin });
+            });
+
+            if (location.search.includes("state=") && 
+                (location.search.includes("code=") || location.search.includes("error="))) {
+                await auth0Client.handleRedirectCallback();
+                window.history.replaceState({}, document.title, "/");
+            }
+
+            const isAuthenticated = await auth0Client.isAuthenticated();
+            
+            if (isAuthenticated) {
+                loginButton.style.display = "none";
+                logoutButton.style.display = "block";
+
+                const userProfile = await auth0Client.getUser();
+                profileElement.style.display = "block";
+                profileElement.innerHTML = `
+                    <p>Welcome, ${userProfile.name}</p>
+                    <img src="${userProfile.picture}" />
+                `;
+            } else {
+                profileElement.style.display = "none";
+            }
         });
-
-        function login() {
-            auth0Client.authorize();
-        }
-
-        function logout() {
-            auth0Client.logout({
-                returnTo: "https://logadeepak.github.io"
-            });
-        }
-
-        function handleAuth() {
-            auth0Client.parseHash((err, authResult) => {
-                if (authResult && authResult.idTokenPayload) {
-                    document.getElementById("profile").innerText =
-                        `Hello, ${authResult.idTokenPayload.name}`;
-                } else if (err) {
-                    console.log("Error: ", err);
-                }
-            });
-        }
-        
-        window.onload = handleAuth;
     </script>
 </body>
 </html>
