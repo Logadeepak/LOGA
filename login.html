@@ -1,148 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flood Vantage - Login</title>
-    <script src="https://cdn.auth0.com/js/auth0/9.19/auth0.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f1f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .login-container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            width: 350px;
-            text-align: center;
-        }
-        h2 {
-            color: #007bff;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 10px;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        .links {
-            margin-top: 15px;
-            font-size: 14px;
-        }
-        .links a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .links a:hover {
-            color: #0056b3;
-        }
-        .back-button {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .back-button a {
-            text-decoration: none;
-            color: #007bff;
-            font-size: 16px;
-            transition: color 0.3s;
-        }
-        .back-button a:hover {
-            color: #0056b3;
-        }
-        #profile {
-            display: none;
-            margin-top: 20px;
-        }
-        #profile img {
-            width: 50px;
-            border-radius: 50%;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flood Vantage - Login</title>
+  <!-- Use Auth0 SPA JS SDK -->
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/1.22/auth0-spa-js.production.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f1f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-container {
+      background-color: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 350px;
+      text-align: center;
+    }
+    h2 {
+      color: #007bff;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .links {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .links a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .links a:hover {
+      color: #0056b3;
+    }
+    .back-button {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .back-button a {
+      text-decoration: none;
+      color: #007bff;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+    .back-button a:hover {
+      color: #0056b3;
+    }
+    #profile {
+      display: none;
+      margin-top: 20px;
+    }
+    #profile img {
+      width: 50px;
+      border-radius: 50%;
+    }
+  </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <button id="login" class="btn">Login with Auth0</button>
-        <button id="logout" class="btn" style="display:none;">Logout</button>
-        <div class="links">
-            <p>Don't have an account? <a href="register.html">Register here</a></p>
-        </div>
-        <div class="back-button">
-            <a href="home.html">← Back to Home</a>
-        </div>
-        <div id="profile"></div>
+  <div class="login-container">
+    <h2>Login</h2>
+    <button id="login" class="btn">Login with Auth0</button>
+    <button id="logout" class="btn" style="display:none;">Logout</button>
+    <div class="links">
+      <p>Don't have an account? <a href="register.html">Register here</a></p>
     </div>
+    <div class="back-button">
+      <a href="home.html">← Back to Home</a>
+    </div>
+    <div id="profile"></div>
+  </div>
 
-    <script>
-        let auth0Client;
+  <script>
+    let auth0Client;
 
-        auth0.createAuth0Client({
-            domain: "dev-0b0v0mrnhy5qfc0w.us.auth0.com",
-            clientId: "aeO2Do3FV31G48Canc0k2Kv5eW2BlZUN",
-            authorizationParams: {
-                redirect_uri: window.location.origin
-            }
-        }).then(async (client) => {
-            auth0Client = client;
+    // Create the Auth0 client
+    auth0.createAuth0Client({
+      domain: "dev-0b0v0mrnhy5qfc0w.us.auth0.com",
+      clientId: "aeO2Do3FV31G48Canc0k2Kv5eW2BlZUN",
+      authorizationParams: {
+        redirect_uri: window.location.origin
+      }
+    })
+    .then(async (client) => {
+      auth0Client = client;
+      
+      const loginButton = document.getElementById("login");
+      const logoutButton = document.getElementById("logout");
+      const profileElement = document.getElementById("profile");
 
-            const loginButton = document.getElementById("login");
-            const logoutButton = document.getElementById("logout");
-            const profileElement = document.getElementById("profile");
+      // Attach event listeners after initialization
+      loginButton.addEventListener("click", async (e) => {
+        e.preventDefault();
+        await auth0Client.loginWithRedirect();
+      });
 
-            loginButton.addEventListener("click", (e) => {
-                e.preventDefault();
-                auth0Client.loginWithRedirect();
-            });
+      logoutButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        auth0Client.logout({ returnTo: window.location.origin });
+      });
 
-            logoutButton.addEventListener("click", (e) => {
-                e.preventDefault();
-                auth0Client.logout({ returnTo: window.location.origin });
-            });
+      // Handle redirect callback, if returning from Auth0
+      if (location.search.includes("state=") &&
+          (location.search.includes("code=") || location.search.includes("error="))) {
+        await auth0Client.handleRedirectCallback();
+        window.history.replaceState({}, document.title, "/");
+      }
 
-            if (location.search.includes("state=") && 
-                (location.search.includes("code=") || location.search.includes("error="))) {
-                await auth0Client.handleRedirectCallback();
-                window.history.replaceState({}, document.title, "/");
-            }
+      const isAuthenticated = await auth0Client.isAuthenticated();
 
-            const isAuthenticated = await auth0Client.isAuthenticated();
-            
-            if (isAuthenticated) {
-                loginButton.style.display = "none";
-                logoutButton.style.display = "block";
+      if (isAuthenticated) {
+        loginButton.style.display = "none";
+        logoutButton.style.display = "block";
 
-                const userProfile = await auth0Client.getUser();
-                profileElement.style.display = "block";
-                profileElement.innerHTML = `
-                    <p>Welcome, ${userProfile.name}</p>
-                    <img src="${userProfile.picture}" />
-                `;
-            } else {
-                profileElement.style.display = "none";
-            }
-        });
-    </script>
+        const userProfile = await auth0Client.getUser();
+        profileElement.style.display = "block";
+        profileElement.innerHTML = `
+          <p>Welcome, ${userProfile.name}</p>
+          <img src="${userProfile.picture}" alt="User Profile Picture" />
+        `;
+      } else {
+        profileElement.style.display = "none";
+      }
+    })
+    .catch((error) => {
+      console.error("Error creating Auth0 client:", error);
+    });
+  </script>
 </body>
 </html>
